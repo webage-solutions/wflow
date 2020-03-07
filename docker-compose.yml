@@ -1,0 +1,99 @@
+version: '3.5'
+services:
+  ui:
+    build:
+      context: "./env/ui"
+    ports:
+      - "${VUE_UI_PORT:-8000}:8000"
+      - "${UI_APP_PORT:-8080}:8080"
+      - '3000:3000'
+    volumes:
+      - ./site:/var/site:${CACHING_OPTION:-cached}
+      - vue-ui-db-volume:/root/.vue-cli-ui:${CACHING_OPTION:-cached}
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    working_dir: /var/site
+    command: "vue ui -H 0.0.0.0 -p 8000"
+
+  web:
+    build:
+      context: env/web
+    ports:
+      - "${APP_PORT:-80}:80"
+#      - "${APP_BUILD_PORT:-81}:81"
+    volumes:
+      - ./api:/var/www
+    working_dir: /var/www
+
+  api:
+    build:
+      context: env/api
+    environment:
+      XDEBUG_PORT: ${XDEBUG_PORT:-9000}
+
+    volumes:
+      - ./api:/var/www
+      - ./env/api/conf/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    working_dir: /var/www
+
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - database-volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis:5
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+
+  elasticsearch:
+    image: elasticsearch:7.5.0
+    ports:
+      - "${ELASTICSEARCH_QUERY_PORT:-9200}:9200"
+      - "${ELASTICSEARCH_CLUSTER_PORT:-9300}:9300"
+    environment:
+      discovery.type: single-node
+
+#  ngrok:
+#    build:
+#      context: env/dev/ngrok
+#    environment:
+#      NGROK_ENABLED: ${NGROK_ENABLED:-false}
+#      NGROK_AUTH_TOKEN: ${NGROK_AUTH_TOKEN:-}
+#      NGROK_AUTH_USER: ${NGROK_AUTH_USER:-}
+#      NGROK_AUTH_PASSWORD: ${NGROK_AUTH_PASSWORD:-}
+#      NGROK_SUBDOMAIN: ${NGROK_SUBDOMAIN:-}
+#    volumes:
+#      - ./env/dev/ngrok/ngrok.yml:/ngrok.yml
+#    ports:
+#      - "${NGROK_PORT:-4040}:4040"
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "${SWAGGER_PORT:-82}:8080"
+    environment:
+      URL: openapi.yaml
+    volumes:
+      - ./api/openapi.yml:/usr/share/nginx/html/openapi.yaml:${CACHING_OPTION:-cached}
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@webage.solutions
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - '${PGADMIN_PORT:-8090}:80'
+    volumes:
+      - pgadmin_volume:/var/lib/pgadmin
+
+volumes:
+  database-volume:
+  vue-ui-db-volume:
+  pgadmin_volume:

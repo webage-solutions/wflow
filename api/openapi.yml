@@ -1,0 +1,42 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: WFlow API
+servers:
+  - url: http://petstore.swagger.io/v1
+paths:
+  /login:
+    post:
+      summary: Logs a user based on credentials
+      operationId: login
+      tags:
+        - auth
+      requestBody:
+        description: "Credentials for the login"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        '200':
+          description: Successful Login
+        default:
+          description: Unauthorized
+components:
+  schemas:
+    LoginRequest:
+      required:
+        - username
+        - password
+      type: "object"
+      properties:
+        username:
+          type: string
+          description: User email
+        password:
+          type: string
+          description: User password

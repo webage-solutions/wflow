@@ -1,0 +1,61 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "WFlow API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/login": {
+      "post": {
+        "description": "Logs a user based on credentials",
+        "operationId": "App\\Http\\Controllers\\AuthController::login",
+        "requestBody": {
+          "description": "Credentials for the login",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Login"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginFailed": {
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LoginRequest": {
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "description": "Class LoginRequest",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}
