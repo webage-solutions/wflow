@@ -1,5 +1,5 @@
 .env
 .idea
-./license_generator/
-./laravel-lang/
-./customer_portal/
+license_generator/
+laravel-lang/
+customer_portal/
