@@ -12,6 +12,9 @@ use Laravel\Passport\Client;
  */
 class OAuthClient extends Client
 {
+
+    protected $hidden = ['user_id', 'secret', 'personal_access_client', 'password_client', 'revoked', 'auto_authorize'];
+
     public function skipsAuthorization()
     {
         return $this->auto_authorize;

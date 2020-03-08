@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
-use App\Models\PublicOrganization;
 use CurrentOrganization;
 use Illuminate\Http\Request;
 use Settings;
@@ -41,11 +40,6 @@ class OrganizationsController extends Controller
         $perPage = $request->query('perpage', 10);
 
         return $builder->paginate($perPage);
-    }
-
-    public function viewByDomainPublic(string $domain)
-    {
-        return PublicOrganization::where('domain', $domain)->firstOrFail();
     }
 
     public function logo(int $organizationId)

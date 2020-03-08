@@ -1,15 +1,22 @@
 import axios from "axios";
 import store from "./store";
-import router from "./router";
+import randomstring from "randomstring";
+import CryptoJs from 'crypto-js';
+import router from './router';
+
 const api = {
 
-    baseURL: process.env.VUE_APP_API_URL,
+    baseURL: () => {
+        const url = process.env.VUE_APP_API_URL ? process.env.VUE_APP_API_URL : `${window.location.protocol}//${window.location.hostname}`;
+        const port = process.env.VUE_APP_API_PORT ? process.env.VUE_APP_API_PORT : window.location.port;
+        return `${url}:${port}`;
+    },
 
     httpClient: function() {
 
         // base config
         const config = {
-            baseURL: `${this.baseURL}/api`,
+            baseURL: `${this.baseURL()}/api`,
             headers: {},
         };
 
@@ -50,16 +57,74 @@ const api = {
         return this.httpClient().get(`organizations/${domain}/public`);
     },
 
-    login: function (username, password) {
-        return new Promise((resolve, reject) => {
-            const data = {username, password};
-            this.httpClient().post('login', data)
-                .then(response => {
-                    resolve(response.data);
-                })
-                .catch(error => {
-                    reject(error);
-                });
+    authorizeLogin: function () {
+
+        const baseDomain = process.env.VUE_APP_BASE_DOMAIN;
+        const currentDomain = window.location.hostname;
+        const currentDomainProtocol = window.location.protocol;
+        const currentDomainPort = window.location.port;
+        const redirectUrlPrefix = `${currentDomainProtocol}//${currentDomain}:${currentDomainPort}`;
+
+        const redirectToAuthorizePage = (clientId, redirectUrl) => {
+            const state = randomstring.generate();
+            const codeVerifier = randomstring.generate(128);
+            store.commit('setOauthInfo', {
+                clientId,
+                redirectUrl,
+                state,
+                codeVerifier,
+            });
+            const codeChallenge = CryptoJs.SHA256(codeVerifier).toString(CryptoJs.enc.Base64).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+            const queryData = {
+                client_id: clientId,
+                redirect_uri: redirectUrl,
+                response_type: 'code',
+                scope: '*',
+                state: state,
+                code_challenge: codeChallenge,
+                code_challenge_method: 'S256',
+            };
+            const query = Object.keys(queryData).map(key => `${key}=${encodeURI(queryData[key])}`).join('&');
+            const url = `${this.baseURL()}/oauth/authorize?${query}`;
+            window.location.replace(url);
+        };
+
+        if (currentDomain !== baseDomain) {
+
+            // we're not on root domain, so identify the organization
+            this.httpClient().get(`domains/${currentDomain}/organization`).then((response) => {
+
+                store.commit('setOrganization', response.data);
+                const clientId = response.data.ui_client.id;
+                const redirectUrl = response.data.ui_client.redirect.split(',').find((item) => item.trim().search(redirectUrlPrefix) === 0);
+                redirectToAuthorizePage(clientId, redirectUrl);
+
+            });
+        } else {
+            redirectToAuthorizePage(1, `${redirectUrlPrefix}/oauth-callback`);
+        }
+
+    },
+
+    login: function(stateCode, authorizationCode) {
+        const redirectRoute = store.state.organization ? '/' : '/select-organization';
+
+        if (store.state.oauthInfo.state !== stateCode) {
+            router.push(redirectRoute);
+        }
+
+        const requestData = {
+            grant_type: 'authorization_code',
+            client_id: store.state.oauthInfo.clientId,
+            redirect_uri: store.state.oauthInfo.redirectUrl,
+            code_verifier: store.state.oauthInfo.codeVerifier,
+            code: authorizationCode,
+        };
+
+        axios.post(`${this.baseURL()}/oauth/token`, requestData). then(response => {
+            store.commit('setOauthToken', response.data);
+            store.dispatch('loadProfile');
+            router.push(redirectRoute);
         });
     },
 

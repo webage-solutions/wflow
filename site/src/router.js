@@ -9,30 +9,16 @@ import IndexOrganization from "./components/views/organizations/IndexOrganizatio
 import CreateOrganization from "./components/views/organizations/CreateOrganization";
 import store from './store';
 import SelectOrganization from "./components/views/SelectOrganization";
-import randomstring from "randomstring";
-import CryptoJs from 'crypto-js';
 import LoadingMessage from "./components/views/LoadingMessage";
-import axios from "axios";
 import OAuthCallback from "./components/views/OAuthCallback";
+import api from "./api";
 
 Vue.use(Router);
 
-// find organization domain
-const baseDomain = process.env.VUE_APP_BASE_DOMAIN;
-const currentDomain = window.location.hostname;
-const regex = new RegExp(`([a-z][a-z0-9-]{3,})\\.${baseDomain}$`);
-
-const matches = currentDomain.match(regex);
-
-if (matches) {
-    store.dispatch('findOrganization', matches[1]);
-} else {
-    store.commit('setOrganization', null);
-}
-
 // ------------------------
 
-const globalRoutes = [
+// routes shared between root app and organization app
+const sharedRoutes = [
     {
         path: '/oauth-callback',
         meta: {
@@ -56,6 +42,30 @@ const globalRoutes = [
         }
     },
     {
+        path: '/forbidden',
+        name: '403',
+        title: '403',
+        meta: {
+            layout: "compact-layout",
+            guestAllowed: true,
+        },
+        component: Error403,
+    },
+    {
+        path: '*',
+        name: '404',
+        title: '404',
+        meta: {
+            layout: "compact-layout",
+            guestAllowed: true,
+        },
+        component: Error404,
+    },
+];
+
+// routes used only on root app
+const rootRoutes = [
+    {
         path: '/select-organization',
         name: 'select-organization',
         title: 'Select Organization',
@@ -75,29 +85,14 @@ const globalRoutes = [
         redirect: '/select-organization'
     },
 ];
-const routes = [
+
+// routes used only on organization app
+const organizationRoutes = [
     {
         path: '/',
         name: 'home',
         title: 'Home',
         component: Home,
-    },
-    {
-        path: '/login',
-        name: 'login',
-        title: 'Login',
-        meta: {
-            layout: 'compact_layout',
-            guestAllowed: true,
-        },
-        beforeEnter: (to, from, next) => {
-            // logged users can't access login page. Go home.
-            if (store.getters.isLogged) {
-                next('/');
-            }
-            next();
-        },
-        component: Login,
     },
     {
         path: '/organizations/index',
@@ -117,53 +112,19 @@ const routes = [
         title: 'Workflow Editor',
         component: WorkflowEditor,
     },
-    {
-        path: '/forbidden',
-        name: '403',
-        title: '403',
-        meta: {
-            layout: "no-layout"
-        },
-        component: Error403,
-    },
-    {
-        path: '*',
-        name: '404',
-        title: '404',
-        meta: {
-            layout: "no-layout",
-            guestAllowed: true,
-        },
-        component: Error404,
-    },
 ];
 
 const router = new Router({
     mode: 'history',
     base: '/',
-    routes: store.state.organization !== null ? routes : globalRoutes,
+    routes: store.state.organization !== null ? [...organizationRoutes, ...sharedRoutes] : [...rootRoutes, ...sharedRoutes],
 });
 
 router.beforeEach((to, from, next) => {
-    // login required and not logged, go to login
+
+    // login required and not logged, do the login process
     if (!to.meta.guestAllowed && !store.getters.isLogged) {
-        const state = randomstring.generate();
-        const codeVerifier = randomstring.generate(128);
-        store.commit('setOauthState', state);
-        store.commit('setOauthCodeVerifier', codeVerifier);
-        const codeChallenge = CryptoJs.SHA256(codeVerifier).toString(CryptoJs.enc.Base64).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-        const queryData = {
-            client_id: 1,
-            redirect_uri: 'http://localhost:8080/oauth-callback',
-            response_type: 'code',
-            scope: '*',
-            state: state,
-            code_challenge: codeChallenge,
-            code_challenge_method: 'S256',
-        };
-        const query = Object.keys(queryData).map(key => `${key}=${encodeURI(queryData[key])}`).join('&');
-        const url = `http://localhost/oauth/authorize?${query}`;
-        window.location.replace(url);
+        api.authorizeLogin();
         next('/preparing-signup');
     }
 

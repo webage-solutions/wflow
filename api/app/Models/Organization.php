@@ -13,10 +13,13 @@ use Storage;
  * @mixin \Eloquent
  * @property int id
  * @property string name
+ * @property int ui_client_id
  * @property array ui_settings
  * @property Setting[] settings
  * @property User[]|Collection users
  * @property Membership membership
+ * @property DomainName[] domainNames
+ * @property OAuthClient uiClient
  */
 class Organization extends Model
 {
@@ -42,6 +45,16 @@ class Organization extends Model
             ->as('membership')
             ->using(Membership::class)
             ->withPivot('member_since');
+    }
+
+    public function domainNames()
+    {
+        return $this->hasMany(DomainName::class);
+    }
+
+    public function uiClient()
+    {
+        return $this->belongsTo(OAuthClient::class, 'ui_client_id');
     }
 
     /**

@@ -30,9 +30,9 @@ Route::get('organizations', 'OrganizationsController@index')
     ->name('organizations.index')
     ->middleware(['auth']);
 
-Route::get('organizations/{domain}/public', 'OrganizationsController@viewByDomainPublic')
-    ->name('organizations.view.public')
-    ->where('domain', '[a-z][a-z0-9-]{3,}');
+Route::get('domains/{domain:domain}/organization', 'DomainsController@organization')
+    ->name('domains.organization')
+    ->where('domain', '[A-Za-z0-9-_.]{3,}');
 
 Route::get('organizations/{organization}/logo', 'OrganizationsController@logo')
     ->name('organizations.logo');

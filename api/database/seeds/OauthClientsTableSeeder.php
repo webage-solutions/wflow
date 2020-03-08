@@ -14,6 +14,7 @@ class OauthClientsTableSeeder extends Seeder
         $now = now();
         DB::table('oauth_clients')->insert([
             [
+                // 2
                 'user_id' => null,
                 'name' => 'Web App [Queen Inc.]',
                 'secret' => null,
@@ -22,11 +23,11 @@ class OauthClientsTableSeeder extends Seeder
                 'password_client' => false,
                 'revoked' => false,
                 'auto_authorize' => true,
-                'organization_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
+                // 3
                 'user_id' => null,
                 'name' => 'Web App [Free Inc.]',
                 'secret' => null,
@@ -35,11 +36,11 @@ class OauthClientsTableSeeder extends Seeder
                 'password_client' => false,
                 'revoked' => false,
                 'auto_authorize' => true,
-                'organization_id' => 2,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
+                // 4
                 'user_id' => null,
                 'name' => 'Web App [Bad Company]',
                 'secret' => null,
@@ -48,7 +49,6 @@ class OauthClientsTableSeeder extends Seeder
                 'password_client' => false,
                 'revoked' => false,
                 'auto_authorize' => true,
-                'organization_id' => 3,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],

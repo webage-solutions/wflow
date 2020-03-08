@@ -16,6 +16,7 @@ class CreateOrganizationsTable extends Migration
         Schema::create('organizations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->bigInteger('ui_client_id')->unique(); //unique to ensure 1 on 1 relation
             $table->json('ui_settings')->nullable();
             $table->json('settings')->nullable();
             $table->timestamps();

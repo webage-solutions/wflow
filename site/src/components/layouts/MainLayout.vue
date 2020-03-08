@@ -108,11 +108,11 @@
             },
             userName: function() {
                 const state = this.$store.state;
-                return state.auth ? state.auth.user.name : null;
+                return state.auth ? state.profile.name : null;
             },
             userInitials: function() {
                 const state = this.$store.state;
-                return state.auth ? state.auth.user.name_initials : null;
+                return state.auth ? state.profile.name_initials : null;
             },
         },
     }

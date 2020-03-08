@@ -50,11 +50,8 @@ const store = new Vuex.Store({
         setUser (state, user) {
             state.auth.user = user;
         },
-        setOauthState (state, oauthState) {
-            state.oauthInfo.state = oauthState;
-        },
-        setOauthCodeVerifier (state, codeVerifier) {
-            state.oauthInfo.codeVerifier = codeVerifier;
+        setOauthInfo (state, oauthInfo) {
+            state.oauthInfo = oauthInfo;
         },
         setProfile (state, profile) {
             state.profile = profile;

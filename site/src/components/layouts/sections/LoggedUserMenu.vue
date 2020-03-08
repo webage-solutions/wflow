@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form method="post" action="http://localhost/auth/logout" ref="logoutForm" style="display: none;"/>
+        <form method="post" :action="logoutUrl" ref="logoutForm" style="display: none;"/>
         <div v-if="$store.getters.isLogged">
             <a class="nav-link dropdown-toggle d-none d-sm-block" type="button" id="dropdownUserButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div class="avatar avatar-24" v-if="avatar===null">{{ initials }}</div>
@@ -29,6 +29,11 @@
                 });
             }
         },
+        computed: {
+            logoutUrl() {
+                return `${api.baseURL()}/auth/logout`;
+            }
+        }
     }
 </script>
 
