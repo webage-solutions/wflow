@@ -1,12 +1,15 @@
 <template>
     <div>
-        <a class="nav-link dropdown-toggle d-none d-sm-block" type="button" id="dropdownUserButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <div class="avatar avatar-24" v-if="avatar===null">{{ initials }}</div>
-            <img class="avatar avatar-24" v-else :src="avatar"/>&nbsp;
-            <span class="d-none d-lg-inline">{{ userName }}</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUserButton">
-            <a class="dropdown-item" href="#" @click="logout">Log Out</a>
+        <form method="post" action="http://localhost/auth/logout" ref="logoutForm" style="display: none;"/>
+        <div v-if="$store.getters.isLogged">
+            <a class="nav-link dropdown-toggle d-none d-sm-block" type="button" id="dropdownUserButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="avatar avatar-24" v-if="avatar===null">{{ initials }}</div>
+                <img class="avatar avatar-24" v-else :src="avatar"/>&nbsp;
+                <span class="d-none d-lg-inline">{{ userName }}</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUserButton">
+                <a class="dropdown-item" href="#" @click="logout()"><span class="fa fa-sign-out-alt"></span> Logout</a>
+            </div>
         </div>
     </div>
 </template>
@@ -17,13 +20,15 @@
         name: 'logged-user-menu',
         props: ['avatar', 'userName', 'initials'],
         methods: {
-            logout: function() {
-                api.logout().finally(() => {
-                    this.$router.push('/login');
+            logout() {
+                api.logout().then(() => {
+
+                    // once logged out from the api, logout on the main app
+                    this.$refs.logoutForm.submit();
+
                 });
             }
         },
-
     }
 </script>
 

@@ -3,15 +3,15 @@
         <h4>Select Organization:</h4>
         <hr/>
         <ul>
-            <li v-for="organization in organizations" :key="organization.id">
+            <li v-for="organization in organizations" :key="organization.id" class="my-2">
                 <a href="#">
                     <img :src="organization.logo" class="organization-logo-img" :alt="organization.name" :title="organization.name" v-if="organization.logo"/>
                     <span v-else>{{ organization.name}}</span>
                 </a>
             </li>
         </ul>
-        <form method="post" action="http://localhost/auth/logout" ref="logoutForm" style="display: none;"/>
-        <button class="btn btn-primary" @click="logout()"><span class="fa fa-sign-out-alt"></span> Logout</button>
+        <hr/>
+        <a><span class="fa fa-building"></span> Manage Organizations</a>
     </div>
 </template>
 
@@ -20,14 +20,6 @@
     export default {
         name: 'Home',
         methods: {
-            logout() {
-                api.logout().then(() => {
-
-                    // once logged out from the api, logout on the main app
-                    this.$refs.logoutForm.submit();
-
-                });
-            }
         },
         computed: {
             organizations() {

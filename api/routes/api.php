@@ -23,7 +23,7 @@ Route::get('server-settings', 'ServerSettingsController@index')->name('serverSet
 // TODO - Route::get('users/{user}/settings');
 Route::get('users/{user}/avatar', 'UsersController@avatar')
     ->name('users.avatar')
-    ->middleware(['auth']);
+    ->middleware(['auth:api']);
 
 // organization routes
 Route::get('organizations', 'OrganizationsController@index')

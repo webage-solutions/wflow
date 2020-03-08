@@ -25,13 +25,6 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
-    /**
      * Create a new controller instance.
      *
      * @return void
@@ -54,6 +47,16 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+    }
+
+    /**
+     * Where to redirect users after registration.
+     *
+     * @return \Illuminate\Config\Repository|mixed
+     */
+    public function redirectTo()
+    {
+        return config('auth.redirectAfterLogin');
     }
 
     /**

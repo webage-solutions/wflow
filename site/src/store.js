@@ -89,8 +89,8 @@ const store = new Vuex.Store({
     getters: {
         isLogged: state => state.oauthToken !== null,
         logo: state => state.organization ? (state.organization.logo || '/wflow_logo.png') : '/wflow_logo.png',
-        user: state => state.auth ? state.auth.user : null,
-        avatar: state => (state.auth && state.auth.user.avatar) ? `${state.auth.user.avatar}?token=${state.auth.access_token}` : null,
+        user: state => state.profile ? state.profile : null,
+        avatar: state => (state.profile && state.profile.avatar) ? `${state.profile.avatar}?token=${state.oauthToken.access_token}` : null,
         organizations: state => state.auth ? state.auth.user.organizations : null,
     },
     plugins: [vuexLocal.plugin],

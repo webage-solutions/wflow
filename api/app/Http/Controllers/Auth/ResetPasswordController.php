@@ -24,7 +24,10 @@ class ResetPasswordController extends Controller
     /**
      * Where to redirect users after resetting their password.
      *
-     * @var string
+     * @return \Illuminate\Config\Repository|mixed
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    public function redirectTo()
+    {
+        return config('auth.redirectAfterLogin');
+    }
 }
