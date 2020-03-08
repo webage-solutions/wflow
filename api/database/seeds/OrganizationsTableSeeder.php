@@ -15,7 +15,6 @@ class OrganizationsTableSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'Queen Inc.',
-                'domain' => 'queen',
                 'settings' => json_encode([
                     'locale' => [
                         'value' => 'pt-BR',
@@ -27,14 +26,12 @@ class OrganizationsTableSeeder extends Seeder
             [
                 'id' => 2,
                 'name' => 'Free Inc.',
-                'domain' => 'free',
                 'settings' => null,
                 'created_at' => now()
             ],
             [
                 'id' => 3,
                 'name' => 'Bad Company',
-                'domain' => 'bad-company',
                 'settings' => null,
                 'created_at' => now()
             ],

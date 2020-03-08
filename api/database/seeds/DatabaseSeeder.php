@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ServerSettingsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(OrganizationsTableSeeder::class);
+        $this->call(DomainNamesTableSeeder::class);
         $this->call(OrganizationUserTableSeeder::class);
         $this->call(StatesTableSeeder::class);
         $this->call(TaskTypesTableSeeder::class);
@@ -21,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TasksTableSeeder::class);
         $this->call(UserGroupsTableSeeder::class);
         $this->call(UserUserGroupTableSeeder::class);
+        $this->call(OauthClientsTableSeeder::class);
     }
 }

@@ -13,7 +13,6 @@ use Storage;
  * @mixin \Eloquent
  * @property int id
  * @property string name
- * @property string domain
  * @property array ui_settings
  * @property Setting[] settings
  * @property User[]|Collection users

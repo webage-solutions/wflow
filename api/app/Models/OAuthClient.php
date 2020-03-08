@@ -8,11 +8,12 @@ use Laravel\Passport\Client;
  * Class OAuthClient - Passport Client override to allow skipping authorization
  *
  * @package App\Models
+ * @property bool auto_authorize
  */
 class OAuthClient extends Client
 {
     public function skipsAuthorization()
     {
-        return true; // TODO - Include a column on the database to ensure that only the WebApp skips this authorization
+        return $this->auto_authorize;
     }
 }

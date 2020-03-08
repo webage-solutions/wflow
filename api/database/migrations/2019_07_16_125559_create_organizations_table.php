@@ -16,7 +16,6 @@ class CreateOrganizationsTable extends Migration
         Schema::create('organizations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('domain');
             $table->json('ui_settings')->nullable();
             $table->json('settings')->nullable();
             $table->timestamps();

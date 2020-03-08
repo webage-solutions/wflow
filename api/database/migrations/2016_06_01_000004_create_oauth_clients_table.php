@@ -23,6 +23,8 @@ class CreateOauthClientsTable extends Migration
             $table->boolean('personal_access_client');
             $table->boolean('password_client');
             $table->boolean('revoked');
+            $table->boolean('auto_authorize')->default(false);
+            $table->bigInteger('organization_id')->nullable();
             $table->timestamps();
         });
 
@@ -39,6 +41,8 @@ class CreateOauthClientsTable extends Migration
                 'personal_access_client' => false,
                 'password_client' => false,
                 'revoked' => false,
+                'auto_authorize' => true,
+                'organization_id' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ]
