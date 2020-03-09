@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -36,7 +37,7 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
-        return config('auth.redirectAfterLogin');
+        return uiRoute();
     }
 
     public function logout(Request $request)

@@ -38,6 +38,6 @@ class ConfirmPasswordController extends Controller
      */
     public function redirectTo()
     {
-        return config('auth.redirectAfterLogin');
+        return uiRoute();
     }
 }

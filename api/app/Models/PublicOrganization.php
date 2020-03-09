@@ -14,6 +14,11 @@ use Storage;
  */
 class PublicOrganization extends Organization
 {
+    /**
+     * @var string
+     */
     protected $table = 'organizations';
-    protected $visible = ['id', 'domain', 'name', 'logo'];
+
+
+    protected $visible = ['id', 'domain', 'name', 'logo', 'uiClient'];
 }

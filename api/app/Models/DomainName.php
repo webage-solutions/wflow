@@ -21,6 +21,11 @@ class DomainName extends Model
 
     //use Searchable;
 
+    public function publicOrganization()
+    {
+        return $this->belongsTo(PublicOrganization::class, 'organization_id');
+    }
+
     public function organization()
     {
         return $this->belongsTo(Organization::class);

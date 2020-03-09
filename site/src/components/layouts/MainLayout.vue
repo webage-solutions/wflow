@@ -89,10 +89,9 @@
             }
         },
         mounted() {
-
             // asynchronously renew profile data
             api.profile().then(response => {
-                this.$store.commit('setUser', response.data);
+                this.$store.dispatch('loadProfile');
             });
             this.uiLoaded = true;
         },
@@ -108,11 +107,11 @@
             },
             userName: function() {
                 const state = this.$store.state;
-                return state.auth ? state.profile.name : null;
+                return state.profile ? state.profile.name : null;
             },
             userInitials: function() {
                 const state = this.$store.state;
-                return state.auth ? state.profile.name_initials : null;
+                return state.profile ? state.profile.name_initials : null;
             },
         },
     }

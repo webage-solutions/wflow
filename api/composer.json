@@ -46,7 +46,8 @@
             "database/factories"
         ],
         "files": [
-            "app/Helpers/CustomerId.php"
+            "app/Helpers/CustomerId.php",
+            "app/Helpers/ui.php"
         ]
     },
     "autoload-dev": {

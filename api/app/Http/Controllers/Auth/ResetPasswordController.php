@@ -28,6 +28,6 @@ class ResetPasswordController extends Controller
      */
     public function redirectTo()
     {
-        return config('auth.redirectAfterLogin');
+        return uiRoute();
     }
 }

@@ -9,7 +9,6 @@ class DomainsController extends Controller
 
     public function organization(DomainName $domain)
     {
-        //return PublicOrganization::where('domain', $domain)->firstOrFail();
-        return $domain->organization()->with('uiClient')->first();
+        return $domain->publicOrganization()->with('uiClient')->first();
     }
 }
