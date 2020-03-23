@@ -29,7 +29,7 @@ class CreateOauthClientsTable extends Migration
 
         // create the root Web UI app as a public PKCE client
         $now = Carbon::now();
-        $redirect = env('APP_UI_URL') . '/oauth-callback';
+        $redirect = uiRoute() . '/oauth-callback';
 
         DB::table('oauth_clients')->insert(
             [

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -35,9 +34,29 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+//    /**
+//     * @param Request $request
+//     * @param string $autoLoginHash
+//     * @return Response|Redirector
+//     */
+//    public function autoLogin(Request $request, string $autoLoginHash)
+//    {
+//        $loginInfo = Cache::get('auto-login-' . $autoLoginHash);
+//
+//        if ($loginInfo === null) {
+//            return redirect('/auth/login');
+//        }
+//
+//        $user = User::findOrFail($loginInfo['userId']);
+//
+//        Auth::login($user, $loginInfo['remember']);
+//        return $this->sendLoginResponse($request);
+//
+//    }
+
     public function redirectTo()
     {
-        return uiRoute();
+        return '/web/home';
     }
 
     public function logout(Request $request)
@@ -45,7 +64,7 @@ class LoginController extends Controller
         $this->traitLogout($request);
         return $request->wantsJson()
             ? new Response('', 204)
-            : redirect('/auth/login');
+            : redirect('/web/login');
     }
 
 }

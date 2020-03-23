@@ -31,7 +31,7 @@
         },
         computed: {
             logoutUrl() {
-                return `${api.baseURL()}/auth/logout`;
+                return `${api.baseURL(true)}/web/logout`;
             }
         }
     }

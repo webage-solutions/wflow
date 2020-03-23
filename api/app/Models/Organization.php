@@ -20,6 +20,7 @@ use Storage;
  * @property Membership membership
  * @property DomainName[] domainNames
  * @property OAuthClient uiClient
+ * @property string main_domain
  */
 class Organization extends Model
 {
@@ -49,12 +50,17 @@ class Organization extends Model
 
     public function domainNames()
     {
-        return $this->hasMany(DomainName::class);
+        return $this->hasMany(DomainName::class, 'organization_id');
     }
 
     public function uiClient()
     {
         return $this->belongsTo(OAuthClient::class, 'ui_client_id');
+    }
+
+    public function getMainDomainAttribute(): string
+    {
+        return $this->domainNames()->orderBy('main_domain', 'desc')->first()->domain;
     }
 
     /**

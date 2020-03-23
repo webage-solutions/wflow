@@ -1,12 +1,9 @@
 <?php
-namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
-use App\Models\User;
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
 use Auth;
-use DB;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {

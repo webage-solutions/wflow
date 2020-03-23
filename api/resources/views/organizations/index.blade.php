@@ -1,11 +1,21 @@
-@extends('layouts.app')
+@php
+
+use App\Models\Organization;
+
+/**
+ * @var Organization[] $organizations
+ */
+
+@endphp
+
+@extends('layouts.full')
 
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header"><h2>Manage Organizations</h2></div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -14,7 +24,13 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    <ul>
+                        @foreach($organizations as $organization)
+                        <li class="my-2">
+                            <span>{{ $organization->name }}</span>
+                        </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>

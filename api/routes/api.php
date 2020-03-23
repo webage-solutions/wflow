@@ -4,14 +4,31 @@ Route::any('/', 'ApiController@index');
 
 //Route::post('licenses', 'LicensesController@add');
 
-// authentication routes
-//Route::post('login', 'AuthController@login')->name('login');
-//Route::post('refresh-login', 'AuthController@refreshLogin');
-Route::post('logout', 'AuthController@logout')->middleware('auth:api');
+// open routes
+// organizations logo route
+Route::get('organizations/{organization}/logo', 'OrganizationsController@logo')->name('organizations.logo');
 
-// profile routes
-Route::get('profile', 'ProfileController@show')->name('profile.show')->middleware('auth:api');
-Route::get('profile/settings', 'ProfileController@indexSettings')->name('profile.settings')->middleware('auth:api');
+// authenticated routes
+Route::middleware('auth:api')->group(function() {
+
+    // auth routes
+    Route::post('logout', 'AuthController@logout');
+
+    // profile routes - for the logged user
+    Route::get('profile', 'ProfileController@show')->name('profile.show');
+    Route::get('profile/settings', 'ProfileController@indexSettings')->name('profile.settings');
+    Route::get('profile/auto-login-hash', 'ProfileController@generateAutoLogin')->name('profile.aut-login-hash');
+
+    // user routes - for other users
+    // TODO - Route::get('users/{user}/settings');
+    Route::get('users/{user}/avatar', 'UsersController@avatar')->name('users.avatar');
+
+    // organizations routes
+
+});
+
+
+
 
 // current-organization routes
 Route::get('current-organization/settings', 'OrganizationsController@currentOrganizationSettings')->name('current-organization.settings')->middleware('organizationRequired');
@@ -19,23 +36,16 @@ Route::get('current-organization/settings', 'OrganizationsController@currentOrga
 // settings routes
 Route::get('server-settings', 'ServerSettingsController@index')->name('serverSettings.index')->middleware('auth'); // TODO - Include authorization
 
-// user routes
-// TODO - Route::get('users/{user}/settings');
-Route::get('users/{user}/avatar', 'UsersController@avatar')
-    ->name('users.avatar')
-    ->middleware(['auth:api']);
-
 // organization routes
 Route::get('organizations', 'OrganizationsController@index')
     ->name('organizations.index')
-    ->middleware(['auth']);
+    ->middleware(['auth:api']);
 
 Route::get('domains/{domain:domain}/organization', 'DomainsController@organization')
     ->name('domains.organization')
     ->where('domain', '[A-Za-z0-9-_.]{3,}');
 
-Route::get('organizations/{organization}/logo', 'OrganizationsController@logo')
-    ->name('organizations.logo');
+
 // TODO- Route::get('organizations/{organization}/settings');
 
 // task types routes

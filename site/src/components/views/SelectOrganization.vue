@@ -2,9 +2,9 @@
     <div>
         <h4>Select Organization:</h4>
         <hr/>
-        <ul>
+        <ul v-if="autoLoginHash !== null">
             <li v-for="organization in organizations" :key="organization.id" class="my-2">
-                <a href="#">
+                <a :href="generateUrl(organization)">
                     <img :src="organization.logo" class="organization-logo-img" :alt="organization.name" :title="organization.name" v-if="organization.logo"/>
                     <span v-else>{{ organization.name}}</span>
                 </a>
@@ -19,7 +19,17 @@
     import api from '../../api';
     export default {
         name: 'Home',
+        data() {
+            return {
+                autoLoginHash: null,
+            }
+        },
         methods: {
+            generateUrl(organization) {
+                const protocol = window.location.protocol;
+                const port = window.location.port;
+                return `${protocol}//${organization.main_domain}:${port}`;
+            }
         },
         computed: {
             organizations() {
@@ -29,6 +39,11 @@
                 }
                 return {};
             }
+        },
+        mounted() {
+            api.autoLoginHash().then(({data}) => {
+                this.autoLoginHash = data.auto_login_hash;
+            });
         }
     }
 </script>

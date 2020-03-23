@@ -6,6 +6,7 @@ use App\Components\OrganizationIdentifier\Middleware\OrganizationMiddleware;
 use App\Components\OrganizationIdentifier\Middleware\OrganizationRequiredMiddleware;
 use App\Http\Middleware\AddHeaderAccessToken;
 use App\Http\Middleware\Locale;
+use App\Http\Middleware\RedirectSingleOrganization;
 use App\Http\Middleware\ValidateLicense;
 use Fruitcake\Cors\HandleCors;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -70,7 +71,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'licensed' => ValidateLicense::class
+        'licensed' => ValidateLicense::class,
+        'single.organization' => RedirectSingleOrganization::class,
     ];
 
     /**

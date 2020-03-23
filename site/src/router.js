@@ -18,7 +18,31 @@ Vue.use(Router);
 // ------------------------
 
 // routes shared between root app and organization app
-const sharedRoutes = [
+const routes = [
+    {
+        path: '/',
+        name: 'home',
+        title: 'Home',
+        component: Home,
+    },
+    {
+        path: '/organizations/index',
+        name: 'organizations.index',
+        title: 'Organizations',
+        component: IndexOrganization,
+    },
+    {
+        path: '/organizations/create',
+        name: 'organizations.create',
+        title: 'Organizations',
+        component: CreateOrganization,
+    },
+    {
+        path: '/wflow-editor',
+        name: 'wflow-editor',
+        title: 'Workflow Editor',
+        component: WorkflowEditor,
+    },
     {
         path: '/oauth-callback',
         meta: {
@@ -63,61 +87,10 @@ const sharedRoutes = [
     },
 ];
 
-// routes used only on root app
-const rootRoutes = [
-    {
-        path: '/select-organization',
-        name: 'select-organization',
-        title: 'Select Organization',
-        meta: {
-            layout: "compact-layout",
-        },
-        // beforeEnter: (to, from, next) => {
-        //     if (store.state.auth.user.organizations.length === 1) {
-        //         window.location = store.getters.autoLoggedLink(store.state.auth.user.organizations[0].domain);
-        //     }
-        //     next();
-        // },
-        component: SelectOrganization,
-    },
-    {
-        path: '*',
-        redirect: '/select-organization'
-    },
-];
-
-// routes used only on organization app
-const organizationRoutes = [
-    {
-        path: '/',
-        name: 'home',
-        title: 'Home',
-        component: Home,
-    },
-    {
-        path: '/organizations/index',
-        name: 'organizations.index',
-        title: 'Organizations',
-        component: IndexOrganization,
-    },
-    {
-        path: '/organizations/create',
-        name: 'organizations.create',
-        title: 'Organizations',
-        component: CreateOrganization,
-    },
-    {
-        path: '/wflow-editor',
-        name: 'wflow-editor',
-        title: 'Workflow Editor',
-        component: WorkflowEditor,
-    },
-];
-
 const router = new Router({
     mode: 'history',
     base: '/',
-    routes: store.state.organization !== null ? [...organizationRoutes, ...sharedRoutes] : [...rootRoutes, ...sharedRoutes],
+    routes,
 });
 
 router.beforeEach((to, from, next) => {

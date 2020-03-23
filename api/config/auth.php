@@ -99,6 +99,4 @@ return [
         ],
     ],
 
-    'redirectAfterLogin' => env('APP_UI_URL', env('APP_URL')) . '/select-organization',
-
 ];

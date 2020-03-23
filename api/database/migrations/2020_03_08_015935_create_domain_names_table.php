@@ -17,6 +17,7 @@ class CreateDomainNamesTable extends Migration
             $table->bigIncrements('id');
             $table->string('domain')->unique();
             $table->bigInteger('organization_id');
+            $table->boolean('main_domain')->default(false);
             $table->timestamps();
         });
     }

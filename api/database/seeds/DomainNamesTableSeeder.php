@@ -16,24 +16,28 @@ class DomainNamesTableSeeder extends Seeder
                 'id' => 1,
                 'domain' => 'queen.localhost',
                 'organization_id' => 1,
+                'main_domain' => false,
                 'created_at' => now()
             ],
             [
                 'id' => 2,
                 'domain' => 'wflow.queen.io',
                 'organization_id' => 1,
+                'main_domain' => true,
                 'created_at' => now()
             ],
             [
                 'id' => 3,
                 'domain' => 'free.localhost',
                 'organization_id' => 2,
+                'main_domain' => true,
                 'created_at' => now()
             ],
             [
                 'id' => 4,
                 'domain' => 'bad-company.localhost',
                 'organization_id' => 3,
+                'main_domain' => true,
                 'created_at' => now()
             ],
         ]);

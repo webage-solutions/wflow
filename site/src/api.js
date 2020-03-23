@@ -6,17 +6,20 @@ import router from './router';
 
 const api = {
 
-    baseURL: () => {
-        const url = process.env.VUE_APP_API_URL ? process.env.VUE_APP_API_URL : `${window.location.protocol}//${window.location.hostname}`;
+    baseURL: (mainDomain = false) => {
+        let url = `${window.location.protocol}//${window.location.hostname}`;
+        if (mainDomain) {
+            url = `${window.location.protocol}//${process.env.VUE_APP_BASE_DOMAIN}`;
+        }
         const port = process.env.VUE_APP_API_PORT ? process.env.VUE_APP_API_PORT : window.location.port;
         return `${url}:${port}`;
     },
 
-    httpClient: function() {
+    httpClient: function(mainDomain = false) {
 
         // base config
         const config = {
-            baseURL: `${this.baseURL()}/api`,
+            baseURL: `${this.baseURL(mainDomain)}/api`,
             headers: {},
         };
 
@@ -85,7 +88,7 @@ const api = {
                 code_challenge_method: 'S256',
             };
             const query = Object.keys(queryData).map(key => `${key}=${encodeURI(queryData[key])}`).join('&');
-            const url = `${this.baseURL()}/oauth/authorize?${query}`;
+            const url = `${this.baseURL(true)}/oauth/authorize?${query}`;
             window.location.replace(url);
         };
 
@@ -131,17 +134,22 @@ const api = {
     logout: function() {
 
         // first revoke the token on backend (async notify)
-        const promise =  this.httpClient().post('logout');
+        const promise = this.httpClient().post('logout');
 
         // then drop the token from vuex (local)
         store.commit('logout');
 
         // return the promise to the caller
         return promise;
+
     },
 
     profile: function() {
         return this.httpClient().get('profile');
+    },
+
+    autoLoginHash: function() {
+        return this.httpClient().get('profile/auto-login-hash');
     }
 };
 

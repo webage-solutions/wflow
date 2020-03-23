@@ -20,5 +20,5 @@ class PublicOrganization extends Organization
     protected $table = 'organizations';
 
 
-    protected $visible = ['id', 'domain', 'name', 'logo', 'uiClient'];
+    protected $visible = ['id', 'domain', 'name', 'logo', 'uiClient', 'main_domain'];
 }

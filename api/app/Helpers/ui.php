@@ -1,11 +1,14 @@
 <?php
 
 if (!function_exists('uiRoute')) {
-    function uiRoute(): string
+    function uiRoute(?string $domain = null): string
     {
-        $protocol = env('APP_UI_PROTOCOL', $_SERVER['REQUEST_SCHEME']) ?? 'https';
-        $host = env('APP_UI_HOST', $_SERVER['HTTP_HOST']);
-        $port = env('APP_UI_PORT', $_SERVER['SERVER_PORT']);
+        if (app()->runningInConsole()) {
+            return env('APP_URL') .':' . (env('APP_UI_PORT') ?? '80');
+        }
+        $protocol = $_SERVER['REQUEST_SCHEME'] ?? 'https';
+        $host = $domain ?? $_SERVER['HTTP_HOST'] ?? 'wflow.online';
+        $port = env('APP_UI_PORT') ?? $_SERVER['SERVER_PORT'] ?? '80';
         return "$protocol://$host:$port";
     }
 }
