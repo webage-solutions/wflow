@@ -88,7 +88,7 @@ const store = new Vuex.Store({
         logo: state => state.organization ? (state.organization.logo || '/wflow_logo.png') : '/wflow_logo.png',
         user: state => state.profile ? state.profile : null,
         avatar: state => (state.profile && state.profile.avatar) ? `${state.profile.avatar}?token=${state.oauthToken.access_token}` : null,
-        organizations: state => state.auth ? state.auth.user.organizations : null,
+        organizations: state => state.profile ? state.profile.organizations : [],
     },
     plugins: [vuexLocal.plugin],
 });

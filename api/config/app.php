@@ -184,6 +184,7 @@ return [
         App\Components\CustomFields\CustomFieldsServiceProvider::class,
         App\Components\Settings\SettingsServiceProvider::class,
         App\Components\OrganizationIdentifier\OrganizationIdentifierServiceProvider::class,
+        App\Components\Search\SearchServiceProvider::class,
 
     ],
 

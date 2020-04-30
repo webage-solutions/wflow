@@ -13,9 +13,9 @@ class OrganizationsTableSeeder extends Seeder
     {
         DB::table('organizations')->insert([
             [
-                'id' => 1,
+                // 1
                 'name' => 'Queen Inc.',
-                'ui_client_id' => 2,
+                'ui_client_id' => 'fce73bc2-02da-47c1-a81d-6dd1ca27b58e',
                 'settings' => json_encode([
                     'locale' => [
                         'value' => 'pt-BR',
@@ -25,16 +25,16 @@ class OrganizationsTableSeeder extends Seeder
                 'created_at' => now()
             ],
             [
-                'id' => 2,
+                // 2
                 'name' => 'Free Inc.',
-                'ui_client_id' => 3,
+                'ui_client_id' => '93e4dbdc-24ec-40c5-abc5-1f5fe5c49c82',
                 'settings' => null,
                 'created_at' => now()
             ],
             [
-                'id' => 3,
+                // 3
                 'name' => 'Bad Company',
-                'ui_client_id' => 4,
+                'ui_client_id' => 'c775807b-eeac-439d-b819-da827d559829',
                 'settings' => null,
                 'created_at' => now()
             ],

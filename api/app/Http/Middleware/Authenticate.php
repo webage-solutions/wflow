@@ -10,7 +10,7 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 class Authenticate extends Middleware
 {
 
-    protected $throughApi = false;
+    protected bool $throughApi = false;
 
     public function handle($request, Closure $next, ...$guards)
     {

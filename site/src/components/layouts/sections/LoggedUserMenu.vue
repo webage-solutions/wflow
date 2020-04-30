@@ -1,24 +1,110 @@
 <template>
-    <div>
+    <v-navigation-drawer
+            :value="value"
+            v-on:input="$emit('input', $event)"
+            temporary
+            app
+            overflow
+            right
+    >
         <form method="post" :action="logoutUrl" ref="logoutForm" style="display: none;"/>
-        <div v-if="$store.getters.isLogged">
-            <a class="nav-link dropdown-toggle d-none d-sm-block" type="button" id="dropdownUserButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <div class="avatar avatar-24" v-if="avatar===null">{{ initials }}</div>
-                <img class="avatar avatar-24" v-else :src="avatar"/>&nbsp;
-                <span class="d-none d-lg-inline">{{ userName }}</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUserButton">
-                <a class="dropdown-item" href="#" @click="logout()"><span class="fa fa-sign-out-alt"></span> Logout</a>
-            </div>
-        </div>
-    </div>
+        <v-list
+                dense
+                nav
+                class="py-0"
+        >
+            <v-list-item two-line>
+                <v-list-item-avatar
+                        color="primary"
+                        size="64"
+                        class="text-center"
+                >
+                    <img v-if="avatar" :src="avatar" :alt="initials"/>
+                    <div v-else class="white--text" style="width: 100%;">
+                        {{ initials }}
+                    </div>
+                </v-list-item-avatar>
+
+                <v-list-item-content>
+                    <v-list-item-title>{{ userName }}</v-list-item-title>
+                    <v-list-item-subtitle>
+                        <router-link to="profile">Edit Profile</router-link>
+                    </v-list-item-subtitle>
+                </v-list-item-content>
+            </v-list-item>
+
+            <v-divider/>
+            <v-list-item
+                    link
+                    @click="$router.push('settings')"
+            >
+                <v-list-item-icon>
+                    <v-icon>fa-cog</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                    <v-list-item-title>Settings</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item
+                    link
+                    @click="logout()"
+            >
+                <v-list-item-icon>
+                    <v-icon>logout</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                    <v-list-item-title>Logout</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-divider/>
+
+            <template v-if="switchOrganizations.length > 1">
+                <v-subheader>Switch Organization</v-subheader>
+                <v-list-item v-for="(organization, i) in switchOrganizations.slice(0, shownOrganizations)" :key="i">
+                    <v-list-item-avatar
+                            color="primary"
+                            size="32"
+                            class="text-center"
+                    >
+    <!--                    <img v-if="avatar" :src="avatar" :alt="initials"/>-->
+                        <div class="white--text overline" style="width: 100%;">
+                            ORG
+                        </div>
+                    </v-list-item-avatar>
+
+                    <v-list-item-content>
+                        <v-list-item-title>{{ organization.name }}</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-btn
+                        v-if="switchOrganizations.length > shownOrganizations"
+                        right
+                        x-small
+                        text
+                        rounded
+                        class="mb-1"
+                ><v-icon left x-small>fa-plus</v-icon> View all</v-btn>
+                <v-divider/>
+            </template>
+            <v-subheader>Appearance & Behavior</v-subheader>
+            <v-list-item class="my-3">
+                <v-switch v-model="darkMode" label="Dark Mode"></v-switch>
+            </v-list-item>
+        </v-list>
+    </v-navigation-drawer>
 </template>
 
 <script>
     import api from '../../../api';
     export default {
         name: 'logged-user-menu',
-        props: ['avatar', 'userName', 'initials'],
+        props: ['avatar', 'userName', 'initials', 'value'],
+        data() {
+            return {
+                shownOrganizations: 2,
+                darkMode: false,
+            }
+        },
         methods: {
             logout() {
                 api.logout().then(() => {
@@ -32,16 +118,20 @@
         computed: {
             logoutUrl() {
                 return `${api.baseURL(true)}/web/logout`;
-            }
+            },
+            switchOrganizations() {
+                const currentOrgId = this.$store.state.organization.id;
+                return this.$store.getters.organizations.filter(org => org.id !== currentOrgId);
+            },
+        },
+        watch: {
+            darkMode: function(newValue) {
+                this.$vuetify.theme.dark = newValue;
+            },
         }
     }
 </script>
 
 <style scoped="true">
-    .profile-userpic {
-        margin: 0;
-        width: 35px;
-        height: 35px;
-        border-radius: 9999px !important;
-    }
+
 </style>

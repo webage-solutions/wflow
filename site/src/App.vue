@@ -1,8 +1,8 @@
 <template>
-    <div id="app" class="container-fluid h-100 w-100 p-0">
+    <v-app>
         <component :is="layout"></component>
         <!--component :is="mobileLayout"></component-->
-    </div>
+    </v-app>
 </template>
 
 <script>

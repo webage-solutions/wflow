@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\ValueObjects\Setting;
+use App\Objects\Setting;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Storage;

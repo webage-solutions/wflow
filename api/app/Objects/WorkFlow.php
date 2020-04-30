@@ -1,12 +1,12 @@
 <?php
 
-namespace App\ValueObjects;
+namespace App\Objects;
 
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Class WorkFlow
- * @package App\ValueObjects
+ * @package App\Objects
  * @property string when
  * @property Transition[] transitions
  */

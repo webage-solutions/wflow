@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ValueObjects;
+namespace App\Objects;
 
 use Exception;
 use Illuminate\Contracts\Support\Arrayable;

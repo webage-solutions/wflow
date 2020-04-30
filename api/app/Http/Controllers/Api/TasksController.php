@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Exceptions\StateNotFoundException;
 use App\Exceptions\TransitionNotAllowedException;
+use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

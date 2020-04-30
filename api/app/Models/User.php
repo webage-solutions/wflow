@@ -2,18 +2,20 @@
 
 namespace App\Models;
 
-use App\ValueObjects\Setting;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Components\Search\Searchable;
+use App\Objects\Setting;
+use App\Scopes\CurrentOrganizationScope;
+use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Storage;
 
 /**
  * Class User
  * @package App\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  * @property int id
  * @property string email
  * @property string name
@@ -28,7 +30,19 @@ use Storage;
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens;
+    use Notifiable, HasApiTokens, ScopedTrait, Searchable;
+
+    protected static $scopes = [
+        //CurrentOrganizationScope::class
+    ];
+
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+        ];
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -101,6 +115,6 @@ class User extends Authenticatable
         $names = explode(' ', $fullName);
         $firstName = array_shift($names);
         $lastName = array_pop($names);
-        return $firstName[0].($lastName[0] ?? '');
+        return $firstName[0] . ($lastName[0] ?? '');
     }
 }

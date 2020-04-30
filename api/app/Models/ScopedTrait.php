@@ -4,14 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-abstract class AbstractScopedModel extends Model
+trait ScopedTrait
 {
-    protected static $scopes = [];
 
-    protected static function boot()
+    public static function bootScopedTrait()
     {
-        parent::boot();
-
         foreach (static::$scopes as $key => $scope) {
             if (!is_numeric($key) && is_callable($scope)) {
                 static::addGlobalScope($key, $scope);

@@ -30,11 +30,6 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes();
 
         Passport::useClientModel(OAuthClient::class);
-//        Passport::routes(function (RouteRegistrar $router) {
-//            $router->forAccessTokens();
-//        });
 
-//        Passport::tokensExpireIn(Carbon::now()->addSeconds(10));
-//        Passport::refreshTokensExpireIn(Carbon::now()->addSeconds(20));
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Scopes\LoggedOrganizationScope;
+use App\Scopes\CurrentOrganizationScope;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class UserGroup
@@ -16,10 +17,13 @@ use Illuminate\Database\Eloquent\Collection;
  * @property Collection|User[] users
  * @property UserGroupMembership membership
  */
-class UserGroup extends AbstractScopedModel
+class UserGroup extends Model
 {
+
+    use ScopedTrait;
+
     protected static $scopes = [
-        LoggedOrganizationScope::class
+        CurrentOrganizationScope::class
     ];
 
     public function users()

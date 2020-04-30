@@ -3,6 +3,7 @@
 namespace App\Components\OrganizationIdentifier\Middleware;
 
 use App\Components\OrganizationIdentifier\Facades\OrganizationFacade;
+use App\Models\DomainName;
 use App\Models\Organization;
 use App\Models\User;
 use Auth;
@@ -10,6 +11,7 @@ use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Log;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OrganizationMiddleware
@@ -24,14 +26,12 @@ class OrganizationMiddleware
     public function handle(Request $request, Closure $next)
     {
 
-        // check if there is an organization header on the request
-        if ($organizationId = request()->header('X-Wflow-Organization')) {
+        if (!preg_match('/^https?:\/\/(.+)$/', $request->root(), $matches)) {
+            throw new HttpException('Invalid domain name');
+        }
 
-            // check if the organization exists
-            $organization = Organization::find($organizationId);
-            if ($organization === null) {
-                throw new NotFoundHttpException('Invalid organization');
-            }
+        /** @var DomainName $domain */
+        if ($domain = DomainName::where('domain', $matches[1])->first()) {
 
             // if there is a logged user...
             /** @var User $loggedUser */
@@ -40,14 +40,14 @@ class OrganizationMiddleware
 
                 // check if the user is member of the organization (if it's not, throws authorization exception)
                 //it should never happen, if happens, it's a UI problem, or an attack
-                if (!$loggedUser->organizations->contains($organization)) {
-                    Log::critical("User `{$loggedUser->email}` that is not part of organization `$organization->name` trying to access it. Potential attack.");
+                if (!$loggedUser->organizations->contains($domain->organization)) {
+                    Log::critical("User `{$loggedUser->email}` that is not part of organization `{$domain->organization->name}` trying to access it. Potential attack...");
                     throw new AuthorizationException('The user is not a member of this organization.');
                 }
 
             }
 
-            OrganizationFacade::set($organization);
+            OrganizationFacade::set($domain->organization);
 
         }
 

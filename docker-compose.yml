@@ -36,6 +36,7 @@ services:
     volumes:
       - ./api:/var/www
       - ./env/api/conf/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - composer-volume:/root/.composer
     working_dir: /var/www
 
   db:
@@ -97,3 +98,4 @@ volumes:
   database-volume:
   vue-ui-db-volume:
   pgadmin_volume:
+  composer-volume:

@@ -2,7 +2,7 @@
 
 namespace App\Components\CustomFields;
 
-use App\ValueObjects\CustomFieldSchema;
+use App\Objects\CustomFieldSchema;
 
 class CustomFields
 {

@@ -104,7 +104,7 @@ const api = {
 
             });
         } else {
-            redirectToAuthorizePage(1, `${redirectUrlPrefix}/oauth-callback`);
+            redirectToAuthorizePage('e473da24-0d2a-4099-99a0-7e6a2ed1b069', `${redirectUrlPrefix}/oauth-callback`);
         }
 
     },

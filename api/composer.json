@@ -10,14 +10,17 @@
     "require": {
         "php": "^7.4",
         "ext-json": "*",
+        "elasticsearch/elasticsearch": "^7.4",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
         "laravel/passport": "^8",
+        "laravel/scout": "^8.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "nyholm/psr7": "^1.2",
+        "symfony/expression-language": "^5.0",
         "venturecraft/revisionable": "1.*"
     },
     "require-dev": {
@@ -34,7 +37,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/scout"
+            ]
         }
     },
     "autoload": {

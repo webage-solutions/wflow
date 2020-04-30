@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use App\Scopes\LoggedOrganizationScope;
+use App\Casts\CustomFieldsSchemaCast;
+use App\Casts\WorkflowsCast;
+use App\Components\Search\Searchable;
+use App\Scopes\CurrentOrganizationScope;
 use App\Components\ExpressionLanguage\Bundles\ActiveWorkFlowForTaskTypeVariableBundle;
 use App\Components\ExpressionLanguage\Facades\ExpressionLanguage;
-use App\ValueObjects\CustomFieldSchema;
-use App\ValueObjects\CustomTypeSchema;
-use App\ValueObjects\WorkFlow;
+use App\Objects\CustomFieldSchema;
+use App\Objects\WorkFlow;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class TaskType
@@ -24,39 +27,31 @@ use Illuminate\Database\Eloquent\Collection;
  * @property WorkFlow active_workflow
  * @property Collection|State[] $states
  */
-class TaskType extends AbstractScopedModel
+class TaskType extends Model
 {
 
+    use ScopedTrait, Searchable;
+
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name
+        ];
+    }
+
     protected static $scopes = [
-        LoggedOrganizationScope::class
+        CurrentOrganizationScope::class
     ];
 
 
     protected $appends = ['active_workflow'];
 
-    protected $hidden = ['fields', 'workflows'];
+    protected $hidden = ['organization_id', 'fields', 'workflows'];
 
-    public function getFieldsAttribute()
-    {
-        return array_map(function ($item) {
-            return new CustomFieldSchema($item);
-        }, json_decode($this->attributes['fields'], true));
-    }
-
-    public function getWorkflowsAttribute()
-    {
-        return array_map(function ($item) {
-            return new WorkFlow($item);
-        }, json_decode($this->attributes['workflows'], true));
-    }
-
-    /**
-     * @param WorkFlow[] $workflows
-     */
-    public function setWorkflowsAttribute(array $workflows)
-    {
-
-    }
+    protected $casts = [
+        'workflows' => WorkflowsCast::class,
+        'fields' => CustomFieldsSchemaCast::class,
+    ];
 
     public function getActiveWorkflowAttribute()
     {

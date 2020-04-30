@@ -1,18 +1,20 @@
 <?php
 
-namespace App\ValueObjects;
+namespace App\Objects;
 
-use App\Components\CustomFields\TypeContract;
+use Illuminate\Contracts\Support\Arrayable;
+use JsonSerializable;
 
 /**
- * Class CustomFieldSchema
- * @package App\ValueObjects
- * @property TypeContract type
- * @property array params
+ * Class Setting
+ * @package App\Objects
+ * @property mixed value
+ * @property bool final
  */
-class CustomFieldSchema
+class Setting implements Arrayable, JsonSerializable
 {
     use FromJsonTrait;
+
 
     /**
      * This method must return an array. When there is no key for the item, it's used directly, when there is a key,
@@ -23,8 +25,10 @@ class CustomFieldSchema
     public function fields(): array
     {
         return [
-            'type',
-            'params',
+            'value',
+            'final' => function($data) {
+                return ((bool) $data) ?? false;
+            }
         ];
     }
 }

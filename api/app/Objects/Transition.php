@@ -1,13 +1,13 @@
 <?php
 
-namespace App\ValueObjects;
+namespace App\Objects;
 
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
 /**
  * Class Transition
- * @package App\ValueObjects
+ * @package App\Objects
  * @property string from
  * @property string to
  * @property string name

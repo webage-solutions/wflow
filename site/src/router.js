@@ -12,6 +12,9 @@ import SelectOrganization from "./components/views/SelectOrganization";
 import LoadingMessage from "./components/views/LoadingMessage";
 import OAuthCallback from "./components/views/OAuthCallback";
 import api from "./api";
+import IndexUsers from "./components/views/users/IndexUsers";
+import Settings from "./components/views/Settings";
+import Profile from "./components/views/Profile";
 
 Vue.use(Router);
 
@@ -24,6 +27,24 @@ const routes = [
         name: 'home',
         title: 'Home',
         component: Home,
+    },
+    {
+        path: '/settings',
+        name: 'settings',
+        title: 'Settings',
+        component: Settings,
+    },
+    {
+        path: '/profile',
+        name: 'profile',
+        title: 'Profile',
+        component: Profile,
+    },
+    {
+        path: '/users/index',
+        name: 'users.index',
+        title: 'Users',
+        component: IndexUsers,
     },
     {
         path: '/organizations/index',
