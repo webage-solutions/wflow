@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import axios from "axios";
 import store from "./store";
 import randomstring from "randomstring";
@@ -148,9 +149,27 @@ const api = {
         return this.httpClient().get('profile');
     },
 
+    settings: function() {
+        return this.httpClient().get('settings');
+    },
+
+    settingsCategories: function() {
+        return this.httpClient().get('settings/categories');
+    },
+
+    profileSettings: function() {
+        return this.httpClient().get('profile/settings');
+    },
+
     autoLoginHash: function() {
         return this.httpClient().get('profile/auto-login-hash');
+    },
+
+    usersSearch: function(query) {
+        return this.httpClient().get(`users/search/${query}`);
     }
 };
+
+Vue.prototype.$api = api;
 
 export default api;

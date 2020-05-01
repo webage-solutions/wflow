@@ -39,6 +39,7 @@ const store = new Vuex.Store({
             codeVerifier: null,
         },
         profile: null,
+        settings: null,
     },
     mutations: {
         setOrganization (state, organizationId) {
@@ -55,6 +56,9 @@ const store = new Vuex.Store({
         },
         setProfile (state, profile) {
             state.profile = profile;
+        },
+        setSettings (state, settings) {
+            state.settings = settings;
         },
         logout (state) {
             state.oauthToken = null;
@@ -78,8 +82,13 @@ const store = new Vuex.Store({
             // else, do nothing
         },
         loadProfile({commit}) {
-            api.profile().then(response => {
-                commit('setProfile', response.data);
+            api.profile().then(({data}) => {
+                commit('setProfile', data);
+            });
+        },
+        loadSettings({commit}) {
+            api.settings().then(({data}) => {
+                commit('setSettings', data)
             });
         }
     },

@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router.js'
-import store from './store.js'
-import 'bootstrap'
-import api from "./plugins/api"
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router.js';
+import store from './store.js';
+import api from './api.js';
+import 'bootstrap';
 import vuetify from './plugins/vuetify';
 
 // css
@@ -14,11 +14,10 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 Vue.config.productionTip = false;
 
-Vue.use(api);
-
 new Vue({
   render: h => h(App),
   store,
   vuetify,
+  api,
   router
 }).$mount('#app');

@@ -38,6 +38,9 @@ Route::middleware('auth:api')->group(function() {
     Route::get('task-types/{taskType:slug}', 'TaskTypesController@info')->name('task-type.info')->where('taskType', '[a-z-]+');
     Route::get('task-types/{taskType:slug}/workflows', 'TaskTypesController@workflows')->name('task-type.workflows')->where('taskType', '[a-z-]+');
 
+    Route::get('settings/categories', 'SettingsController@categories');
+    Route::get('settings', 'SettingsController@index');
+
 });
 
 

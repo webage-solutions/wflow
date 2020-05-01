@@ -10,6 +10,7 @@
     import MainLayout from "./components/layouts/MainLayout";
     import CompactLayout from "./components/layouts/CompactLayout";
     import NoLayout from "./components/layouts/NoLayout";
+    import api from "./api";
     const default_layout = 'main-layout';
     export default {
         name: 'app',
@@ -30,6 +31,11 @@
             if (!this.$store.profile && this.$store.getters.isLogged) {
                 this.$store.dispatch('loadProfile');
             }
+            this.$store.dispatch('loadSettings');
+
+            // set ui colors...
+            this.$vuetify.theme.themes.light.primary = '#' + this.$store.state.settings['appearance.colors.light.primary'];
+            //this.$vuetify.theme.themes.dark.primary = '#002';
         },
     }
 </script>

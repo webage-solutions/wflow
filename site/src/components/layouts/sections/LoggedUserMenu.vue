@@ -36,7 +36,7 @@
             <v-divider/>
             <v-list-item
                     link
-                    @click="$router.push('settings')"
+                    @click="$router.push('/settings')"
             >
                 <v-list-item-icon>
                     <v-icon>fa-cog</v-icon>

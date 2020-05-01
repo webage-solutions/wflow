@@ -18,7 +18,6 @@ class ProfileController extends Controller
     public function indexSettings()
     {
         return Settings::getUserSettings(Auth::user());
-        //return Auth::user()->settings;
     }
 
     /**

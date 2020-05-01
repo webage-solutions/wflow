@@ -2,7 +2,11 @@
 
 namespace App\Components\Settings;
 
+use App\Components\CustomFields\AbstractType;
 use App\Components\CustomFields\DomainTypeContract;
+use App\Components\Settings\Exceptions\InvalidCustomFieldType;
+use App\Components\Settings\Exceptions\InvalidCustomFieldTypeClass;
+use App\Components\Settings\Exceptions\InvalidSettingsConfig;
 use App\Components\Settings\Exceptions\SettingDefaultValueNotDefined;
 use App\Models\Organization;
 use App\Models\ServerSettings;
@@ -10,6 +14,7 @@ use App\Models\User;
 use Auth;
 use Cache;
 use CurrentOrganization;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
 
 class Settings
 {
@@ -29,7 +34,7 @@ class Settings
             return $value;
         }
 
-        $settingConfig = config("settings.$key", null);
+        $settingConfig = config("settings.settings.$key", null);
 
         // ensure that we have a settings config (required)
         if ($settingConfig === null) {
@@ -76,23 +81,16 @@ class Settings
         return $this->toCache($key, $setting->value ?? $value);
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultSettings(): array
     {
         $output = [];
-        foreach (config('settings') as $key => $item) {
-
-            $type = $item['type'];
-            $params = array_values($item['params']);
-            $object = new $type(...$params);
-
-            if ($object instanceof DomainTypeContract) {
-                $output[$key]['list'] = $object->availableItems();
-            }
-
-            // server level
-            $output[$key]['value'] = $item['value'];
-            $output[$key]['override_level'] = $item['override_level'];
-
+        foreach (config('settings.settings') as $key => $item) {
+            $item['level'] = 'default';
+            $item['final'] = false;
+            $output[$key] = $item;
         }
         return $output;
     }
@@ -104,74 +102,88 @@ class Settings
         $output = [];
         foreach ($this->getDefaultSettings() as $key => $item) {
 
-            // skip non overridable settings
             if ($item['override_level'] === 'none') {
-                continue;
-            }
-
-            if (isset($serverSettings[$key])) {
+                $item['final'] = true;
+            } elseif (isset($serverSettings[$key])) {
                 $item['value'] = $serverSettings[$key]->value;
-                $item['final'] = $serverSettings[$key]->final;
+                $item['level'] = 'server';
+                $item['final'] = $item['final'] || $serverSettings[$key]->final;
             }
             $output[$key] = $item;
         }
         return $output;
     }
 
-    public function getOrganizationSettings(Organization $organization): array
+    public function getOrganizationSettings(?Organization $organization = null): array
     {
+
+        if ($organization === null) {
+            $organization = CurrentOrganization::get();
+        }
+
         $organizationSettings = $organization->settings;
 
         $output = [];
         foreach ($this->getServerSettings() as $key => $item) {
 
-            // skip non overridable settings
-            if ($item['override_level'] === 'server' || ($item['final'] ?? false)) {
-                continue;
-            }
-
-            if (isset($item['list'])) {
-                $item['list'][''] = $item['list'][$item['value']] . ' - Server Default';
-                ksort($item['list']);
-            }
-
-            if (isset($organizationSettings[$key])) {
+            if ($item['final'] || $item['override_level'] === 'server') {
+                $item['final'] = true;
+            } elseif (
+                ($item['stop_level'] ?? null) === null &&
+                isset($organizationSettings[$key])
+            ) {
                 $item['value'] = $organizationSettings[$key]->value;
+                $item['level'] = 'organization';
                 $item['final'] = $organizationSettings[$key]->final;
-            } else {
-                $item['value'] = '';
             }
             $output[$key] = $item;
         }
         return $output;
     }
 
-    public function getUserSettings(User $user): array
+    public function getUserSettings(?User $user = null, ?Organization $organization = null): array
     {
+
+        if ($user === null) {
+            $user = Auth::user();
+            $organization = CurrentOrganization::get();
+        }
+
         $userSettings = $user->settings;
 
         $output = [];
-        foreach ($this->getOrganizationSettings($user->current_organization) as $key => $item) {
-
-            // skip non overridable settings
-            if ($item['override_level'] === 'organization' || ($item['final'] ?? false)) {
-                continue;
-            }
-
-            if (isset($item['list'])) {
-                $item['list'][''] = $item['list'][$item['value']] . ' - Server Default';
-                ksort($item['list']);
-            }
-
-            if (isset($organizationSettings[$key])) {
+        foreach ($this->getOrganizationSettings($organization) as $key => $item) {
+            if ($item['final'] || $item['override_level'] === 'organization') {
+                $item['final'] = true;
+            } elseif (
+                ($item['stop_level'] ?? null) === null &&
+                isset($organizationSettings[$key])
+            ) {
                 $item['value'] = $userSettings[$key]->value;
-                $item['final'] = $userSettings[$key]->final;
-            } else {
-                $item['value'] = '';
+                $item['level'] = 'user';
+                $item['final'] = $item['final'] || $userSettings[$key]->final;
             }
             $output[$key] = $item;
         }
         return $output;
+    }
+
+    public function getEffectiveSettings(?User $user = null, ?Organization $organization = null): array
+    {
+
+        // TODO - Cache This!!!
+
+        if (($user === null && $organization !== null) || ($user !== null && $organization === null)) {
+            // TODO - Throw exception
+            dd('invalid params');
+        }
+
+        if ($user === null) {
+            $user = Auth::user();
+            $organization = CurrentOrganization::get();
+        }
+
+        return array_map(fn ($item) => $item['value'], $this->getUserSettings($user, $organization));
     }
 
     protected function getCacheKey(User $loggedUser, $key) {

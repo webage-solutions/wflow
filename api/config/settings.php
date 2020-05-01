@@ -3,6 +3,8 @@
 /**
  * This file holds the default settings of the system. All setting used on the system MUST have an entry on this file.
  * Each entry have a key, that represents the setting name, and the value is an array of fields:
+ * - name - User friendly name for the field (depends on the path)
+ * - path - The hierarchical path for the field.
  * - type - The custom type used to handle the setting
  * - params - An array with the parameters passed to the custom type. It's format is dependent on the custom type used.
  * - value - The default value for the setting (REQUIRED).
@@ -14,26 +16,76 @@
  */
 
 return [
-    'locale' => [
-        'type' => \App\Components\CustomFields\Types\SingleValueFromList::class,
-        'params' => [
-            'list' => [
-                'en-US' => 'English (US)',
-                'pt-BR' => 'Português do Brasil',
+    'categories' => [
+        [
+            'id' => 'idiom_locale',
+            'name' => 'Idiom and Locale',
+            'settings' => ['locale', 'timezone']
+        ],
+        [
+            'id' => 'appearance',
+            'name' => 'Appearance & Behavior',
+            'children' => [
+                [
+                    'id' => 'colors',
+                    'name' => 'UI colors',
+                    'settings' => [
+                        'appearance.colors.light.primary',
+                        'appearance.colors.light.success',
+                    ]
+                ],
+                [
+                    'id' => 'dark',
+                    'name' => 'Dark Mode',
+                    'settings' => [
+                        'appearance.dark',
+                    ]
+                ],
             ]
         ],
-        'value' => 'en-US',
-        'override_level' => null,
     ],
-    'foo' => [
-        'type' => \App\Components\CustomFields\Types\SingleValueFromList::class,
-        'params' => [
-            'list' => [
-                'bar' => 'Bar',
-                'baz' => 'Baz',
-            ]
+    'settings' => [
+        'locale' => [
+            'name' => 'Idiom',
+            'type' => 'single_value_from_list',
+            'params' => [
+                'list' => [
+                    'en-US' => 'English (US)',
+                    'pt-BR' => 'Português do Brasil',
+                ]
+            ],
+            'value' => 'en-US',
+            'override_level' => null,
         ],
-        'value' => 'baz',
-        'override_level' => null,
-    ],
+        'timezone' => [
+            'name' => 'Timezone',
+            'type' => 'single_value_from_list',
+            'params' => [
+                'list' => array_combine(timezone_identifiers_list(), timezone_identifiers_list())
+            ],
+            'value' => 'en-US',
+            'override_level' => null,
+        ],
+        'appearance.colors.light.primary' => [
+            'name' => 'Primary color',
+            'type' => 'rgb_code',
+            'params' => [],
+            'value' => '1976D2',
+            'override_level' => null,
+        ],
+        'appearance.colors.light.success' => [
+            'name' => 'Success color',
+            'type' => 'rgb_code',
+            'params' => [],
+            'value' => '1976D2',
+            'override_level' => null,
+        ],
+        'appearance.dark' => [
+            'name' => 'DarkMode',
+            'type' => 'rgb_code',
+            'params' => [],
+            'value' => '1976D2',
+            'override_level' => null,
+        ]
+    ]
 ];
